@@ -2,12 +2,8 @@ package com.armaan.enotes.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
-
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ObjectUtils;
 
 import com.armaan.enotes.dto.CategoryDto;
 import com.armaan.enotes.dto.CategoryResponse;
@@ -42,9 +38,10 @@ public class CategoryServiceImpl implements CategoryService{
 
     }
 
+    @Transactional
     public CategoryResponse  updateCategory(Integer id,CategoryDto categoryDto)
     {
-        Category category=categoryRepository.findById(id)
+        Category category=categoryRepository.findByIdAndIsDeletedFalse(id)
         .orElseThrow(()-> new ResourceNotFoundException("Category not found with id: " + id));
 
         categoryMapper.updateEntityFromDto(categoryDto, category);
@@ -61,32 +58,27 @@ public class CategoryServiceImpl implements CategoryService{
     @Override
     public List<CategoryResponse> getAllCategories() {
 
-       List<Category> categories=categoryRepository.findAll();
+       List<Category> categories=categoryRepository.findAllByIsDeletedFalse();
        return categoryMapper.toResponseList(categories);
 
     }
 
-    // @Override
-    // public List<CategoryResponse> getActiveCategory() {
-    //     List<Category> categories=categoryRepository.findByIsActiveTrueIsDeletedFalse();
-    //      return  categories.stream().map(cat->modelMapper.map(cat, CategoryResponse.class)).toList();
-    // }
-
     @Override
-    public CategoryDto getCategoryById(Integer id) {
-        Category category =categoryRepository.findById(id)
-        .orElseThrow(()-> new ResourceNotFoundException("Category not found with id: " + id));
-        return categoryMapper.toDto(category);
+    public List<CategoryResponse> getActiveCategory() {
+        List<Category> categories=categoryRepository.findByIsActiveTrueAndIsDeletedFalse();
+        return categoryMapper.toResponseList(categories);
     }
 
-    // @Override
-    // public List<CategoryResponse> findByIsActiveTrue() {
-    //     // TODO Auto-generated method stub
-    //     throw new UnsupportedOperationException("Unimplemented method 'findByIsActiveTrue'");
-    // }
+    @Override
+    public CategoryResponse getCategoryById(Integer id) {
+        Category category =categoryRepository.findByIdAndIsDeletedFalse(id)
+        .orElseThrow(()-> new ResourceNotFoundException("Category not found with id: " + id));
+        return categoryMapper.toResponse(category);
+    }
 
+    @Transactional
     public CategoryResponse deleteCategory(Integer id) {
-    Category category = categoryRepository.findById(id)
+    Category category = categoryRepository.findByIdAndIsDeletedFalse(id)
         .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + id));
 
     category.setIsDeleted(true); // Mark as deleted

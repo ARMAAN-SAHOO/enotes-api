@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.armaan.enotes.dto.CategoryDto;
 import com.armaan.enotes.dto.CategoryResponse;
-import com.armaan.enotes.entity.Category;
 
 public interface CategoryService {
 
@@ -12,7 +11,7 @@ public interface CategoryService {
     CategoryResponse createCategory(CategoryDto categoryDto);
 
     // Read (active only)
-    List<Category> getAllCategories();
+    List<CategoryResponse> getAllCategories();
 
     CategoryResponse getCategoryById(Integer id);
 
@@ -21,4 +20,6 @@ public interface CategoryService {
 
     // Soft delete (mark as deleted)
     CategoryResponse deleteCategory(Integer id);
+
+    List<CategoryResponse> getActiveCategory();
 }
