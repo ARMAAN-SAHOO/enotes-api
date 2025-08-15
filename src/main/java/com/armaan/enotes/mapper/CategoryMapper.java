@@ -3,9 +3,9 @@ package com.armaan.enotes.mapper;
 import java.util.List;
 
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
-import org.mapstruct.factory.Mappers;
 
 import com.armaan.enotes.dto.CategoryDto;
 import com.armaan.enotes.dto.CategoryResponse;
@@ -14,10 +14,10 @@ import com.armaan.enotes.entity.Category;
 @Mapper(componentModel = "spring",nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface CategoryMapper {
 
-       CategoryMapper INSTANCE = Mappers.getMapper(CategoryMapper.class);
 
+       @Mapping(target = "isDeleted", ignore = true)
        Category toEntity(CategoryDto categoryDto);
-
+       
        CategoryDto toDto(Category category);
 
        CategoryResponse toResponse(Category entity);
@@ -28,6 +28,7 @@ public interface CategoryMapper {
 
        List<CategoryResponse> toResponseList(List<Category> entities);
 
+       @Mapping(target = "isDeleted", ignore = true)
        void updateEntityFromDto(CategoryDto dto,@MappingTarget Category category);
        
 }
