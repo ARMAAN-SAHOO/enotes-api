@@ -16,6 +16,7 @@ public interface UserMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "role", ignore = true)
+    @Mapping(target="refreshTokens",ignore = true)
     User toEntity(UserDto userDto);
 
     UserDto toDto(User user);
@@ -26,5 +27,6 @@ public interface UserMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "role", ignore = true)
+     @Mapping(target="refreshTokens",ignore = true)
     void updateEntityFromDto(UserDto userDto,@MappingTarget User user);
 }

@@ -6,9 +6,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.armaan.enotes.dto.JwtResponse;
+import com.armaan.enotes.dto.TokensResponse;
 import com.armaan.enotes.dto.UserDto;
 import com.armaan.enotes.dto.UserResponse;
 import com.armaan.enotes.security.AuthService;
+
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -25,6 +29,17 @@ public class AuthController {
         return ResponseEntity.ok(userResponse);
     }
 
-    // No need for login() here — Spring Security handles formLogin automatically
-    // No need for logout() method — Spring Security handles it automatically
+    @PostMapping("/login")
+    public ResponseEntity<JwtResponse> login(@RequestBody UserDto userDto) {
+       
+        try {
+            TokensResponse tokensResponse =authService.signIn(userDto);
+            return ResponseEntity.ok(new JwtResponse(tokensResponse.accessToken()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(401).body(new JwtResponse("Invalid username or password"));
+        }
+    }
+
+
 }
